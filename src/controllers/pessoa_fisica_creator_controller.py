@@ -17,6 +17,8 @@ class PessoaFisicaCreatorController:
 
         self.__validate_complete_name(nome_completo)
         self.__insert_pessoa_fisica_in_db(renda_mensal, idade, nome_completo, celular, email, categoria, saldo)
+        
+        return self.__format_response(person_info)
     
     def __validate_complete_name(self, complete_name: str) -> None:
         valid_characters = re.compile(r'^[a-zA-Z\s]+$')
@@ -26,3 +28,12 @@ class PessoaFisicaCreatorController:
     
     def __insert_pessoa_fisica_in_db(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
         self.__pessoa_fisica_repository.create_pessoa_fisica(renda_mensal, idade, nome_completo, celular, email, categoria, saldo)
+    
+    def __format_response(self, person_info: Dict) -> Dict:
+        return {
+            "data": {
+                "type": "pessoa_fisica",
+                "count": 1,
+                "attributes": person_info
+            }
+        }
