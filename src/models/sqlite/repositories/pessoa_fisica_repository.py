@@ -32,11 +32,12 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
             except NoResultFound:
                 return None
 
-    def sacar_dinheiro(self, person_id: int, quantidade: float) -> None:
+    def sacar_dinheiro(self, person_id: int, quantidade: float) -> PessoaFisica | None:
         with self.__db_connection as database:
             try:
                 pessoa_fisica_data = database.session.query(PessoaFisica).filter_by(id=person_id).first()
                 pessoa_fisica_data.saldo -= quantidade
                 database.session.commit()
+                return pessoa_fisica_data
             except NoResultFound:
                 raise ValueError("Pessoa Física não encontrada")

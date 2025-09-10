@@ -11,5 +11,5 @@ class PessoaFisicaRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    def sacar_dinheiro(self, person_id: int, quantidade: float) -> None:
+    def sacar_dinheiro(self, person_id: int, quantidade: float) -> PessoaFisica | None:
         pass
