@@ -26,6 +26,20 @@ class MockPessoaFisicaRepository:
             saldo=10000
         )
 
+    def sacar_dinheiro(self, person_id: int, quantidade: float) -> MockPessoaFisica | None:
+        person_mock = MockPessoaFisica(
+            renda_mensal=5000,
+            idade=35,
+            nome_completo="João da Silva",
+            celular="9999-8888",
+            email="joao@example.com",
+            categoria="Categoria A",
+            saldo=10000
+        )
+
+        person_mock.saldo -= quantidade
+        return person_mock
+
 def test_create():
     person_info = {
         "renda_mensal": 1000,
@@ -81,3 +95,11 @@ def test_find():
     }
 
     assert response == expected_response
+
+def test_sacar_dinheiro():
+    controller = PessoaFisicaController(MockPessoaFisicaRepository())
+    response = controller.sacar_dinheiro(1, 1000)
+
+    assert response["data"]["type"] == "pessoa_fisica"
+    assert response["data"]["count"] == 1
+    assert response["data"]["attributes"]["saldo"] == 9000
