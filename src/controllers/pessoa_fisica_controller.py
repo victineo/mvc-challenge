@@ -29,6 +29,11 @@ class PessoaFisicaController(PessoaFisicaControllerInterface):
         formatted_response = self.__format_response(person)
         return formatted_response
 
+    def sacar_dinheiro(self, person_id: int, quantidade: float) -> Dict:
+        self.__sacar_dinheiro_in_db(person_id, quantidade)
+
+        return self.__format_response(person_id)
+
     # -----
 
     def __validate_complete_name(self, complete_name: str) -> None:
@@ -47,6 +52,9 @@ class PessoaFisicaController(PessoaFisicaControllerInterface):
             raise HttpNotFoundError("Pessoa Física não encontrada")
 
         return person
+
+    def __sacar_dinheiro_in_db(self, person_id: int, quantidade: float) -> None:
+        self.__pessoa_fisica_repository.sacar_dinheiro(person_id, quantidade)
 
     def __format_response(self, person: PessoaFisica | Dict | None) -> Dict:
         if isinstance(person, Dict):

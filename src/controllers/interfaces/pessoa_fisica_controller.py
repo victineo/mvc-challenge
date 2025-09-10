@@ -9,3 +9,7 @@ class PessoaFisicaControllerInterface(ABC):
     @abstractmethod
     def buscar_pessoa_fisica(self, person_id: int) -> Dict:
         pass
+
+    @abstractmethod
+    def sacar_dinheiro(self, person_id: int, quantidade: float) -> Dict:
+        pass

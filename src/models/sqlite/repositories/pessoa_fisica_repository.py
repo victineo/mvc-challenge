@@ -5,8 +5,8 @@ from sqlalchemy.orm.exc import NoResultFound
 class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
     def __init__(self, db_connection) -> None:
         self.__db_connection = db_connection
-        
-    def create_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
+
+    def criar_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
         with self.__db_connection as database:
             try:
                 pessoa_fisica_data = PessoaFisica(
@@ -23,11 +23,20 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
             except Exception as e:
                 database.session.rollback()
                 raise e
-    
-    def get_pessoa_fisica(self, person_id: int) -> PessoaFisica | None:
+
+    def obter_pessoa_fisica(self, person_id: int) -> PessoaFisica | None:
         with self.__db_connection as database:
             try:
                 pessoa_fisica_data = database.session.query(PessoaFisica).filter_by(id=person_id).first()
                 return pessoa_fisica_data
             except NoResultFound:
                 return None
+
+    def sacar_dinheiro(self, person_id: int, quantidade: float) -> None:
+        with self.__db_connection as database:
+            try:
+                pessoa_fisica_data = database.session.query(PessoaFisica).filter_by(id=person_id).first()
+                pessoa_fisica_data.saldo -= quantidade
+                database.session.commit()
+            except NoResultFound:
+                raise ValueError("Pessoa Física não encontrada")
