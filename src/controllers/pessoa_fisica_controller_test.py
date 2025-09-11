@@ -12,10 +12,10 @@ class MockPessoaFisica():
         self.saldo = saldo
 
 class MockPessoaFisicaRepository:
-    def criar_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
+    def create_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
         pass
 
-    def buscar_pessoa_fisica(self, person_id: int) -> MockPessoaFisica | None:
+    def get_pessoa_fisica(self, person_id: int) -> MockPessoaFisica | None:
         return MockPessoaFisica(
             renda_mensal=5000,
             idade=35,
@@ -26,7 +26,7 @@ class MockPessoaFisicaRepository:
             saldo=10000
         )
 
-    def sacar_dinheiro(self, person_id: int, quantidade: float) -> MockPessoaFisica | None:
+    def withdraw_money(self, person_id: int, quantidade: float) -> MockPessoaFisica | None:
         person_mock = MockPessoaFisica(
             renda_mensal=5000,
             idade=35,

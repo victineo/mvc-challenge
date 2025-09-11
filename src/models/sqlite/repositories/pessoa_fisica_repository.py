@@ -6,7 +6,7 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
     def __init__(self, db_connection) -> None:
         self.__db_connection = db_connection
 
-    def criar_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
+    def create_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
         with self.__db_connection as database:
             try:
                 pessoa_fisica_data = PessoaFisica(
@@ -24,7 +24,7 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
                 database.session.rollback()
                 raise e
 
-    def obter_pessoa_fisica(self, person_id: int) -> PessoaFisica | None:
+    def get_pessoa_fisica(self, person_id: int) -> PessoaFisica | None:
         with self.__db_connection as database:
             try:
                 pessoa_fisica_data = database.session.query(PessoaFisica).filter_by(id=person_id).first()
@@ -32,7 +32,7 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
             except NoResultFound:
                 return None
 
-    def sacar_dinheiro(self, person_id: int, quantidade: float) -> PessoaFisica | None:
+    def withdraw_money(self, person_id: int, quantidade: float) -> PessoaFisica | None:
         with self.__db_connection as database:
             try:
                 pessoa_fisica_data = database.session.query(PessoaFisica).filter_by(id=person_id).first()
