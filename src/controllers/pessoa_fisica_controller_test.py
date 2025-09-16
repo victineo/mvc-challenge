@@ -1,5 +1,6 @@
 import pytest
 from .pessoa_fisica_controller import PessoaFisicaController
+from src.models.sqlite.entities.pessoa_fisica import PessoaFisica
 
 class MockPessoaFisica():
     def __init__(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
@@ -11,9 +12,30 @@ class MockPessoaFisica():
         self.categoria = categoria
         self.saldo = saldo
 
+    def to_dict(self) -> dict:
+        return {
+            "id": 1,
+            "tipo": "pessoa_fisica",
+            "renda_mensal": self.renda_mensal,
+            "idade": self.idade,
+            "nome_completo": self.nome_completo,
+            "celular": self.celular,
+            "email": self.email,
+            "categoria": self.categoria,
+            "saldo": self.saldo
+        }
+
 class MockPessoaFisicaRepository:
-    def create_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
-        pass
+    def create_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> MockPessoaFisica:
+        return MockPessoaFisica(
+            renda_mensal=renda_mensal,
+            idade=idade,
+            nome_completo=nome_completo,
+            celular=celular,
+            email=email,
+            categoria=categoria,
+            saldo=saldo
+        )
 
     def get_pessoa_fisica(self, person_id: int) -> MockPessoaFisica | None:
         return MockPessoaFisica(
@@ -34,10 +56,9 @@ class MockPessoaFisicaRepository:
             celular="9999-8888",
             email="joao@example.com",
             categoria="Categoria A",
-            saldo=10000
+            saldo=10000 - quantidade
         )
 
-        person_mock.saldo -= quantidade
         return person_mock
 
 def test_create():
@@ -54,9 +75,9 @@ def test_create():
     controller = PessoaFisicaController(MockPessoaFisicaRepository())
     response = controller.criar_pessoa_fisica(person_info)
 
-    assert response["data"]["type"] == "pessoa_fisica"
-    assert response["data"]["count"] == 1
-    assert response["data"]["attributes"] == person_info
+    assert response["tipo"] == "pessoa_fisica"
+    for key, value in person_info.items():
+        assert response[key] == value
 
 def test_create_error():
     person_info = {
@@ -79,19 +100,15 @@ def test_find():
     response = controller.buscar_pessoa_fisica(1)
 
     expected_response = {
-        "data": {
-            "type": "pessoa_fisica",
-            "count": 1,
-            "attributes": {
-                "renda_mensal": 5000,
-                "idade": 35,
-                "nome_completo": "João da Silva",
-                "celular": "9999-8888",
-                "email": "joao@example.com",
-                "categoria": "Categoria A",
-                "saldo": 10000
-            }
-        }
+        "id": 1,
+        "tipo": "pessoa_fisica",
+        "renda_mensal": 5000,
+        "idade": 35,
+        "nome_completo": "João da Silva",
+        "celular": "9999-8888",
+        "email": "joao@example.com",
+        "categoria": "Categoria A",
+        "saldo": 10000
     }
 
     assert response == expected_response
@@ -100,6 +117,4 @@ def test_sacar_dinheiro():
     controller = PessoaFisicaController(MockPessoaFisicaRepository())
     response = controller.sacar_dinheiro(1, 1000)
 
-    assert response["data"]["type"] == "pessoa_fisica"
-    assert response["data"]["count"] == 1
-    assert response["data"]["attributes"]["saldo"] == 9000
+    assert response["saldo"] == 9000
