@@ -6,7 +6,7 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
     def __init__(self, db_connection) -> None:
         self.__db_connection = db_connection
 
-    def create_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
+    def create_pessoa_fisica(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> PessoaFisica:
         with self.__db_connection as database:
             try:
                 pessoa_fisica_data = PessoaFisica(
@@ -20,6 +20,8 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
                 )
                 database.session.add(pessoa_fisica_data)
                 database.session.commit()
+
+                return pessoa_fisica_data
             except Exception as e:
                 database.session.rollback()
                 raise e
