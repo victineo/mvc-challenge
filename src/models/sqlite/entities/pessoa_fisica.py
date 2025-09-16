@@ -1,3 +1,4 @@
+from typing import Dict
 from src.models.sqlite.settings.base import Base
 from sqlalchemy import Column, BIGINT, String, REAL
 
@@ -15,3 +16,16 @@ class PessoaFisica(Base):
 
     def __repr__(self):
         return f"PessoaFisica[id={self.id}, nome={self.nome_completo}, email={self.email}]"
+
+    def to_dict(self) -> Dict:
+        return {
+            "id": self.id,
+            "tipo": "pessoa_fisica",
+            "renda_mensal": self.renda_mensal,
+            "idade": self.idade,
+            "nome_completo": self.nome_completo,
+            "celular": self.celular,
+            "email": self.email,
+            "categoria": self.categoria,
+            "saldo": self.saldo
+        }
