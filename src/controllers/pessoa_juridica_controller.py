@@ -35,6 +35,11 @@ class PessoaJuridicaController(PessoaJuridicaControllerInterface):
 
         return person.to_dict()
 
+    def realizar_extrato(self, person_id: int) -> Dict:
+        person = self.__pessoa_juridica_repository.get_pessoa_juridica(person_id)
+
+        return person.to_dict()
+
     # ----------
 
     def __validate_complete_name(self, complete_name: str) -> None:

@@ -13,3 +13,7 @@ class PessoaJuridicaControllerInterface(ABC):
     @abstractmethod
     def sacar_dinheiro(self, person_id: int, quantidade: float) -> Dict:
         pass
+
+    @abstractmethod
+    def realizar_extrato(self, person_id: int) -> Dict:
+        pass
