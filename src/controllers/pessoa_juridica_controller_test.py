@@ -118,3 +118,9 @@ def test_sacar_dinheiro():
     response = controller.sacar_dinheiro(1, 1000)
 
     assert response["saldo"] == 69000
+
+def test_bank_statement():
+    controller = PessoaJuridicaController(MockPessoaJuridicaRepository())
+    response = controller.realizar_extrato(1)
+
+    assert response["saldo"] == 70000
