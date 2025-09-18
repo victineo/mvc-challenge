@@ -2,7 +2,6 @@ from typing import Dict
 from src.errors.error_types.http_not_found import HttpNotFoundError
 from .interfaces.pessoa_fisica_controller import PessoaFisicaControllerInterface
 from src.models.sqlite.interfaces.pessoa_fisica_repository import PessoaFisicaRepositoryInterface
-from src.models.sqlite.entities.pessoa_fisica import PessoaFisica
 import re
 
 class PessoaFisicaController(PessoaFisicaControllerInterface):
@@ -33,6 +32,11 @@ class PessoaFisicaController(PessoaFisicaControllerInterface):
 
     def sacar_dinheiro(self, person_id: int, quantidade: float) -> Dict:
         person = self.__pessoa_fisica_repository.withdraw_money(person_id, quantidade)
+
+        return person.to_dict()
+
+    def realizar_extrato(self, person_id: int) -> Dict:
+        person = self.__pessoa_fisica_repository.get_pessoa_fisica(person_id)
 
         return person.to_dict()
 

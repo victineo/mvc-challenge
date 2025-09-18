@@ -2,7 +2,6 @@ from typing import Dict
 from src.errors.error_types.http_not_found import HttpNotFoundError
 from .interfaces.pessoa_juridica_controller import PessoaJuridicaControllerInterface
 from src.models.sqlite.interfaces.pessoa_juridica_repository import PessoaJuridicaRepositoryInterface
-from src.models.sqlite.entities.pessoa_juridica import PessoaJuridica
 import re
 
 class PessoaJuridicaController(PessoaJuridicaControllerInterface):
