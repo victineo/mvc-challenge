@@ -1,3 +1,4 @@
+from typing import Dict
 import pytest
 from .pessoa_juridica_controller import PessoaJuridicaController
 
@@ -11,9 +12,30 @@ class MockPessoaJuridica():
         self.categoria = categoria
         self.saldo = saldo
 
+    def to_dict(self) -> Dict:
+        return {
+            "id": 1,
+            "tipo": "pessoa_juridica",
+            "faturamento": self.faturamento,
+            "idade": self.idade,
+            "nome_fantasia": self.nome_fantasia,
+            "celular": self.celular,
+            "email_corporativo": self.email_corporativo,
+            "categoria": self.categoria,
+            "saldo": self.saldo
+        }
+
 class MockPessoaJuridicaRepository:
-    def create_pessoa_juridica(self, faturamento: float, idade: int, nome_fantasia: str, celular: str, email_corporativo: str, categoria: str, saldo: float) -> None:
-        pass
+    def create_pessoa_juridica(self, faturamento: float, idade: int, nome_fantasia: str, celular: str, email_corporativo: str, categoria: str, saldo: float) -> MockPessoaJuridica:
+        return MockPessoaJuridica(
+            faturamento=faturamento,
+            idade=idade,
+            nome_fantasia=nome_fantasia,
+            celular=celular,
+            email_corporativo=email_corporativo,
+            categoria=categoria,
+            saldo=saldo
+        )
 
     def get_pessoa_juridica(self, person_id: int) -> MockPessoaJuridica | None:
         return MockPessoaJuridica(
@@ -34,10 +56,9 @@ class MockPessoaJuridicaRepository:
             celular="5555-6666",
             email_corporativo="contato@abc.com",
             categoria="Categoria B",
-            saldo=70000
+            saldo=70000 - quantidade
         )
 
-        legal_entity_mock.saldo -= quantidade
         return legal_entity_mock
 
 def test_create():
@@ -54,19 +75,19 @@ def test_create():
     controller = PessoaJuridicaController(MockPessoaJuridicaRepository())
     response = controller.criar_pessoa_juridica(legal_entity_info)
 
-    assert response["data"]["type"] == "pessoa_juridica"
-    assert response["data"]["count"] == 1
-    assert response["data"]["attributes"] == legal_entity_info
+    assert response["tipo"] == "pessoa_juridica"
+    for key, value in legal_entity_info.items():
+        assert response[key] == value
 
 def test_create_error():
     legal_entity_info = {
-        "faturamento": 1000,
-        "idade": 30,
+        "faturamento": 90000,
+        "idade": 15,
         "nome_fantasia": "Empresa ABC 123",
         "celular": "1234-5678",
         "email_corporativo": "contato@abc123.com",
         "categoria": "B",
-        "saldo": 1000
+        "saldo": 40000
     }
 
     controller = PessoaJuridicaController(MockPessoaJuridicaRepository())
@@ -76,30 +97,24 @@ def test_create_error():
 
 def test_find():
     controller = PessoaJuridicaController(MockPessoaJuridicaRepository())
-    response = controller.buscar_pessoa_juridica(2)
+    response = controller.buscar_pessoa_juridica(1)
 
     expected_response = {
-        "data": {
-            "type": "pessoa_juridica",
-            "count": 1,
-            "attributes": {
-                "faturamento": 80000,
-                "idade": 5,
-                "nome_fantasia": "Empresa ABC",
-                "celular": "5555-6666",
-                "email_corporativo": "contato@abc.com",
-                "categoria": "Categoria B",
-                "saldo": 70000
-            }
-        }
+        "id": 1,
+        "tipo": "pessoa_juridica",
+        "faturamento": 80000,
+        "idade": 5,
+        "nome_fantasia": "Empresa ABC",
+        "celular": "5555-6666",
+        "email_corporativo": "contato@abc.com",
+        "categoria": "Categoria B",
+        "saldo": 70000
     }
 
     assert response == expected_response
 
 def test_sacar_dinheiro():
     controller = PessoaJuridicaController(MockPessoaJuridicaRepository())
-    response = controller.sacar_dinheiro(2, 1000)
+    response = controller.sacar_dinheiro(1, 1000)
 
-    assert response["data"]["type"] == "pessoa_juridica"
-    assert response["data"]["count"] == 1
-    assert response["data"]["attributes"]["saldo"] == 69000
+    assert response["saldo"] == 69000
