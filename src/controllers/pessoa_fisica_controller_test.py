@@ -1,6 +1,6 @@
+from typing import Dict
 import pytest
 from .pessoa_fisica_controller import PessoaFisicaController
-from src.models.sqlite.entities.pessoa_fisica import PessoaFisica
 
 class MockPessoaFisica():
     def __init__(self, renda_mensal: float, idade: int, nome_completo: str, celular: str, email: str, categoria: str, saldo: float) -> None:
@@ -12,7 +12,7 @@ class MockPessoaFisica():
         self.categoria = categoria
         self.saldo = saldo
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict:
         return {
             "id": 1,
             "tipo": "pessoa_fisica",
