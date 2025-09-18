@@ -6,7 +6,7 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
     def __init__(self, db_connection) -> None:
         self.__db_connection = db_connection
 
-    def create_pessoa_juridica(self, faturamento: float, idade: int, nome_fantasia: str, celular: str, email_corporativo: str, categoria: str, saldo: float) -> None:
+    def create_pessoa_juridica(self, faturamento: float, idade: int, nome_fantasia: str, celular: str, email_corporativo: str, categoria: str, saldo: float) -> PessoaJuridica:
         with self.__db_connection as database:
             try:
                 pessoa_juridica_data = PessoaJuridica(
@@ -20,6 +20,8 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
                 )
                 database.session.add(pessoa_juridica_data)
                 database.session.commit()
+
+                return pessoa_juridica_data
             except Exception as e:
                 database.session.rollback()
                 raise e
@@ -31,3 +33,13 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
                 return pessoa_juridica_data
             except NoResultFound:
                 return None
+
+    def withdraw_money(self, legal_entity_id: int, quantidade: float) -> PessoaJuridica | None:
+        with self.__db_connection as database:
+            try:
+                pessoa_juridica_data = database.session.query(PessoaJuridica).filter_by(id=legal_entity_id).first()
+                pessoa_juridica_data.saldo -= quantidade
+                database.session.commit()
+                return pessoa_juridica_data
+            except NoResultFound:
+                raise ValueError("Pessoa Jurídica não encontrada")
